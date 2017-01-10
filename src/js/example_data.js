@@ -1,6 +1,6 @@
 var coins = {
   "Bitcoin": 'https://github.com/bitcoin/bitcoin',
-  "Etherium": 'https://github.com/ethereum/go-ethereum',
+  "Ethereum": 'https://github.com/ethereum/go-ethereum',
   "Ripple": 'https://github.com/ripple/rippled',
   "Litecoin": 'https://github.com/litecoin-project/litecoin',
   "Monero": 'https://github.com/monero-project/monero',
@@ -21,7 +21,7 @@ var coins = {
   'E-Dinar Coin': 'https://github.com/edincoin/EDINARCOIN',
   //'ARDOR':'',
   'GameCredits': 'https://github.com/gamecredits-project/GameCredits',
-  'Swisscoin': 'https://github.com/SCNPay/swiscoin',
+  'Swiscoin': 'https://github.com/SCNPay/swiscoin',
   'Bitshares': 'https://github.com/bitshares/bitshares-2',
   /** Notable below top 25 **/
   "Nxt": 'https://bitbucket.org/JeanLucPicard/nxt', // bitbucket

@@ -4,7 +4,7 @@
   "description": "Compare github repositories",
   "main": "index.js",
   "scripts": {
-    "start": "http-server -o",
+    "start": "http-server src -o ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "wassname",

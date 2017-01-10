@@ -14,6 +14,7 @@
   <label><a href="https://github.com/settings/tokens">Github api token: </a></label>
   <input id="token" placeholder="token" />
 </div>
+<button id="refresh">Refresh</button>
 
 <table id="table" class="display" width="100%">
 
@@ -24,10 +25,19 @@
     </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js" charset="utf-8"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.13/js/jquery.dataTables.js" charset="utf-8"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js" charset="utf-8"></script>
-src="https://cdnjs.cloudflare.com/ajax/libs/gh.js/3.0.8/gh.min.js" charset="utf-8"></script>
-src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js" charset="utf-8"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.13/js/jquery.dataTables.js" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.colVis.min.js" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/colreorder/1.3.2/js/dataTables.colReorder.min.js" charset="utf-8"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gh.js/3.0.8/gh.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js" charset="utf-8"></script>
+
+<script src="js/example_data.js" charset="utf-8"></script>
+<script src="js/fetch_stats.js" charset="utf-8"></script>
 <script src="js/main.js" charset="utf-8"></script>
 </html>

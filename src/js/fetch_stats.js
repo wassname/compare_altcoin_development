@@ -2,20 +2,25 @@
  * TODO cache requests by date
  */
 
-// cache and save github api token
-$('#token').val(localStorage['gh_token'])
-$('#token').on('change', function() {
-    localStorage['gh_token'] = $('$token').val()
+let gh = new GitHub(localStorage['gh_token'] || '')
+$(document).ready(function() {
+
+    // cache and save github api token
+    $('#token').val(localStorage['gh_token'])
+    $('#token').on('change', function() {
+        localStorage['gh_token'] = $('#token').val()
+    })
+    gh = new GitHub(localStorage['gh_token'] || '')
 })
 
-let gh = new GitHub(localStorage['gh_token'] || '')
 
-function promiseGitHubStats(url) {
 
-    var apiUrl = url.replace('https://github.com/', '')
+function promiseGitHubRepoStats(url) {
+
+    var apiUrl = "repos/" + url.replace('https://github.com/', '')
 
     var promiseStats = new Promise(function(resolve, reject) {
-        gh.get("repos/" + apiUrl, (err, response) => {
+        gh.get(apiUrl, (err, response) => {
             if (err)
                 reject(err)
             else
@@ -24,7 +29,7 @@ function promiseGitHubStats(url) {
     })
 
     var promiseContributors = new Promise(function(resolve, reject) {
-        gh.get("repos/" + apiUrl + '/stats/contributors', (err, response) => {
+        gh.get(apiUrl + '/contributors', {all:true, opts:{per_page:100}}, (err, response) => {
             if (err)
                 reject(err)
             else
@@ -33,12 +38,12 @@ function promiseGitHubStats(url) {
     }).then(r => {
         return {
             contributors: r.length,
-            //commits: _.sum(r.map(c => c.total))
+            commits: _.sum(r.map(c => c.contributions))
         }
     })
 
     var promiseCommits = new Promise(function(resolve, reject) {
-        gh.get("repos/" + apiUrl + '/stats/participation', (err, response) => {
+        gh.get(apiUrl + '/stats/participation', {opts:{per_page:100}}, (err, response) => {
             if (err)
                 reject(err)
             else
@@ -50,8 +55,21 @@ function promiseGitHubStats(url) {
         }
     })
 
+    var promiseChanges = new Promise(function(resolve, reject) {
+        gh.get(apiUrl + '/stats/code_frequency', {opts:{per_page:100}}, (err, response) => {
+            if (err)
+                reject(err)
+            else
+                resolve(response)
+        })
+    }).then(r => {
+        return {
+            'code_frequency': _.round(_.mean(r.total), 3)
+        }
+    })
+
     var promiseReleases = new Promise(function(resolve, reject) {
-        gh.get("repos/" + apiUrl + '/releases', (err, response) => {
+        gh.get(apiUrl + '/releases', {opts:{per_page:100}}, (err, response) => {
             if (err)
                 reject(err)
             else
@@ -61,13 +79,11 @@ function promiseGitHubStats(url) {
         return {'releases': r.length}
     })
 
-    https : //api.github.com/repos/bitcoin/bitcoin/releases
-
-    return Promise.all([promiseStats, promiseContributors, promiseCommits, promiseReleases]).then(data => _.merge(...data))
+    return Promise.all([promiseStats, promiseContributors, promiseChanges, promiseCommits, promiseReleases]).then(data => _.merge(...data))
 
 }
 
-function promiseBitbucketStats(url) {
+function promiseBitbucketRepoStats(url) {
     url = url.replace('https://bitbucket.org/', 'https://api.bitbucket.org/2.0/repositories/')
 
     // get all commits using a while(res.next) loop, then filter by date, to get comits per week. This part is slow

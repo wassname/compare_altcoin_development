@@ -1,40 +1,46 @@
 /**
-
 TODO:
 - consider using add/minus as well/instead of commits
 - total commits (add contributor contributions)
 - sum projects over organisations
-- paginate contributors to get over 100
 - see if it's a fork?
+- add use input to enter repos
 **/
 
 // format: name from on coinmarketcap: core Github project or repo
+function renderUrl(data){return '<a href="'+data+'">'+data+'</a>'}
+function renderDate(data){return data?moment(data).format('YYYY/MM/DD'):data}
 
 var columns = [
     {
         "data": "coin",
         "title": "coin"
-    }, {
+    },
+    {
         "data": "commits_per_week",
-        "title": "commits_per_week (for last year)"
-    }, {
+        "title": "commits per week (for last year)"
+    },
+    {
         "data": "watchers",
         "title": "watchers"
-    }, {
-        "data": "open_issues",
-        "title": "open_issues"
     },
-
-    //{
-    //    "data": "size",
-    //    "title": "size"
-    //},
+    {
+        "data": "open_issues",
+        "title": "open issues"
+    },
+    {
+       "data": "size",
+       "title": "size",
+       "visible": false
+    },
     {
         "data": "created_at",
-        "title": "created_at"
+        "title": "created",
+        render: renderDate
     }, {
         "data": "updated_at",
-        "title": "updated_at"
+        "title": "updated",
+        render: renderDate
     }, {
         "data": "contributors",
         "title": "contributors (up to 100)"
@@ -48,15 +54,79 @@ var columns = [
         "data": "language",
         "title": "language"
     },
-    //{
-    //  "data": "description",
-    //  "title": "description"
-    //},
-
+    {
+     "data": "description",
+     "title": "description",
+     "visible": false
+    },
+      {
+        "data": "commits",
+        "title": "commits",
+        "visible": false
+      },
+      {
+        "data": "code_frequency",
+        "title": "code frequency",
+        "visible": false
+    },
+  {
+    "data": "pushed_at",
+    "title": "pushed",
+    "visible": false,
+    render: renderDate
+  },
     {
         "data": "url",
-        "title": "url"
-    }
+        "title": "url",
+        render: renderUrl
+    },
+  // {
+  //   "data": "id",
+  //   "title": "id",
+  //   "visible": false
+  // },
+  {
+    "data": "name",
+    "title": "name",
+    "visible": false
+  },
+  // {
+  //   "data": "full_name",
+  //   "title": "full_name",
+  //   "visible": false
+  // },
+  // {
+  //   "data": "owner",
+  //   "title": "owner",
+  //   "visible": false
+  // },
+  // {
+  //   "data": "private",
+  //   "title": "private",
+  //   "visible": false
+  // },
+  {
+    "data": "fork",
+    "title": "fork",
+    "visible": false
+  },
+  {
+    "data": "homepage",
+    "title": "homepage",
+    "visible": false,
+    render: renderUrl
+  },
+  // {
+  //   "data": "default_branch",
+  //   "title": "default_branch",
+  //   "visible": false
+  // },
+  // {
+  //   "data": "permissions",
+  //   "title": "permissions",
+  //   "visible": false
+  // },
+
 ]
 
 /** parse dates then format **/
@@ -93,36 +163,68 @@ function makeMarkDownTable(data) {
     return table
 }
 
-$(document).ready(function() {
 
-    // Collect data
-    let promises = Object.keys(coins).map(coin => {
-        var url = coins[coin]
-        if (url.includes('github.com')) {
-            return promiseGitHubStats(url).then(data => {
-                data.coin = coin
-                data.url = url
-                return data
-            })
-        } else {
-            return promiseBitbucketStats(url).then(data => {
-                data.coin = coin
-                data.url = url
-                return data
-            })
+/** fill missing attribtes so datatables stops complaining **/
+function fillAll(data, columns){
+    return data.map(row=>{
+        for (var i = 0; i < columns.length; i++) {
+            var key = columns[i].data
+            if (row[key]===undefined) row[key] = ''
         }
+        return row
+    })
+}
 
+$(document).ready(function() {
+    $('#refresh').on('click', function(){
+        localStorage['gh-data'] = ''
+        window.location.reload()
     })
 
-    Promise.all(promises).then(data => {
-        data = parseDates(data)
-        localStorage['gh-data'] = JSON.stringify(data)
+    // Collect data
+    let promises
+    if (!localStorage['gh-data'])
+        promises = Promise.all(Object.keys(coins).map(coin => {
+            var url = coins[coin]
+            if (url.includes('github.com')) {
+                return promiseGitHubRepoStats(url).then(data => {
+                    data.coin = coin
+                    data.url = url
+                    return data
+                })
+            } else {
+                return promiseBitbucketRepoStats(url).then(data => {
+                    data.coin = coin
+                    data.url = url
+                    return data
+                })
+            }
+
+        }))
+        .then((data) => {
+            // cache
+            localStorage['gh-data'] = JSON.stringify(data)
+            return data
+        })
+    else promises = Promise.resolve(JSON.parse(localStorage['gh-data']))
+
+
+
+    promises.then(data => {
+        // data = parseDates(data)
+        data = fillAll(data, columns)
+
         $('#table').DataTable({
             data: _.values(data),
             columns,
             "order": [
                 [1, "desc"]
-            ]
+            ],
+            pageLength: 100,
+            "lengthMenu": [ 10, 25, 50, 75, 100,800],
+            buttons: ['colvis'],
+            stateSave: true,
+            dom: 'Bfrtip',
         })
 
         $('#markdown').val(makeMarkDownTable(data))
