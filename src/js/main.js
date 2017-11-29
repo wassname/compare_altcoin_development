@@ -240,7 +240,7 @@ function refresh() {
             data: _.values(data),
             columns,
             "order": [
-                [1, "asc"]
+                [1, "desc"]
             ],
             pageLength: 100,
             "lengthMenu": [
