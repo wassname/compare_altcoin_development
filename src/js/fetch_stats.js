@@ -3,8 +3,8 @@
  */
 
 let gh = new GitHub(localStorage['gh_token'] || '')
-$(document).ready(function() {
 
+$(document).ready(function() {
     // cache and save github api token
     $('#token').val(localStorage['gh_token'])
     $('#token').on('change', function() {
@@ -13,6 +13,16 @@ $(document).ready(function() {
     gh = new GitHub(localStorage['gh_token'] || '')
 })
 
+
+var MergeBySumingNumbers = objects =>
+    objects.reduce((s,r)=>{
+        Object.keys(r).map(key=>{
+            v = r[key]
+            if (typeof(v)==="number") s[key]=(s[key]||0)+v
+            else s[key] = v
+        })
+       return s
+    },{})
 
 
 function promiseGitHubRepoStats(url) {
@@ -80,8 +90,31 @@ function promiseGitHubRepoStats(url) {
     })
 
     return Promise.all([promiseStats, promiseContributors, promiseChanges, promiseCommits, promiseReleases]).then(data => _.merge(...data))
-
 }
+
+
+function promiseGitHubRepoStatsMulti(repos){
+    return Promise.all(
+        repos.map(promiseGitHubRepoStats)
+    )
+    .then(MergeBySumingNumbers)
+}
+
+
+function promiseGitHubOrgStats(org){
+    var apiUrl = "orgs/" + org.replace('https://github.com/', '') + '/repos'
+    return new Promise(function(resolve, reject) {
+        gh.get(apiUrl, {opts:{per_page:100}}, (err, response) => {
+            if (err)
+                reject(err)
+            else
+                resolve(response)
+        })
+    })
+    .then(data => data.map(row=>row.full_name))
+    .then(promiseGitHubRepoStatsMulti)
+}
+
 
 function promiseBitbucketRepoStats(url) {
     url = url.replace('https://bitbucket.org/', 'https://api.bitbucket.org/2.0/repositories/')
