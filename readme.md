@@ -1,5 +1,10 @@
-Static site for comparing github repos/users.
+This site fetches github statistics to rank cryptocoins by developer activity.
 
+Because I wish people paid more attention to altcoin fundementals, like how much work the developers are doing. 
+
+The [live site is here](https://wassname.github.io/compare_altcoin_development/src/) but there's a snapshot below.
+
+# Snapshot 2017-11-29
 
 | coin           | commits per week | watchers | open issues | created    | updated    | contributor |
 |---|---|---|---|---|---|---|
@@ -52,8 +57,6 @@ Static site for comparing github repos/users.
 |Burstcoin|0|60|13|2014-08-13|2017-10-08|3|
 |Ardor|0|5|1|2017-04-02T10:08:50+00:00|2017-08-24T12:00:55+00:00||
 
-
-[live site](https://wassname.github.io/compare_altcoin_development/src/)
 
 # Screenshot
 
