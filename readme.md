@@ -51,9 +51,6 @@ The [live site is here](https://wassname.github.io/compare_altcoin_development/s
 |Qora|0|35|21|2015-03-15|2017-08-26|6|
 |Dogecoin|0|1463|94|2015-04-11|2017-11-10|359|
 |Nxt|0|2|1|2017-07-29T15:28:59+00:00|2017-11-18T09:32:31+00:00||
-|Tittiecoin|||||||
-|GameCredits|||||||
-|Swiscoin|||||||
 |Burstcoin|0|60|13|2014-08-13|2017-10-08|3|
 |Ardor|0|5|1|2017-04-02T10:08:50+00:00|2017-08-24T12:00:55+00:00||
 
