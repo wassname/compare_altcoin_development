@@ -1,6 +1,8 @@
 /**
  * TODO cache requests by date
  */
+LITE_MODE = localStorage['LITE_MODE']
+
 
 let gh = new GitHub(localStorage['gh_token'] || '')
 
@@ -37,6 +39,8 @@ function promiseGitHubRepoStats(url) {
                 resolve(response)
         })
     })
+
+    if (LITE_MODE) {return promiseStats}
 
     var promiseContributors = new Promise(function(resolve, reject) {
         gh.get(apiUrl + '/contributors', {all:true, opts:{per_page:100}}, (err, response) => {
@@ -102,7 +106,7 @@ function promiseGitHubRepoStatsMulti(repos){
 
 
 function promiseGitHubOrgStats(org){
-    var apiUrl = "orgs/" + org.replace('https://github.com/', '') + '/repos'
+    var apiUrl = org.replace('https://github.com/', '') + '/repos'
     return new Promise(function(resolve, reject) {
         gh.get(apiUrl, {opts:{per_page:100}}, (err, response) => {
             if (err)
@@ -111,7 +115,15 @@ function promiseGitHubOrgStats(org){
                 resolve(response)
         })
     })
-    .then(data => data.map(row=>row.full_name))
+    .then(data => data
+        // we could filter out minor repos here
+        .filter(row =>
+            row.stargazers_count>7 &&
+            moment(row.updated_at)>moment().subtract(12, 'months') &&
+            row.private === false &&
+            row.archived === false
+        )
+        .map(row=>row.full_name))
     .then(promiseGitHubRepoStatsMulti)
 }
 
