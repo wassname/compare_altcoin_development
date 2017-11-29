@@ -5,18 +5,28 @@
         <title>Compare github repository statistics</title>
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.13/css/jquery.dataTables.css">
-        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="css/style.css">
 
     </head>
     <body>
-<div>
-  <label><a href="https://github.com/settings/tokens">Github api token: </a></label>
-  <input id="token" placeholder="token" value="1996bd63f4c524b4cd36499e3db39d321f0b39a7"/>
-</div>
+        <table id="table" class="display" width="100%">
 
-<div>
-  <label title="Enter each entry onseperate lines. Each line as 'name,url' where url is 'https://github.com/<orgname>/<reponame>' or 'https://github.com/orgs/<orgname>' or  'https://github.com/users/<username>' or a space seperated list 'https://github.com/<orgname>/<reponame1> https://github.com/<orgname>/<reponame2>">csv inputs</label>
-  <textarea id="repos" style="width: 100%; height:200px;">
+            <textbox id="markdown"></textbox>
+
+        </table>
+
+<hr />
+<div class="">
+    <h2>Gather new data (beta)</h2>
+    Enter your github api token, update the csv inputs if you want, and hit go. Monitor the javascript console for errors and watch the countdown that replaces the go button.
+    <div>
+      <label><a href="https://github.com/settings/tokens">Github api token: </a></label>
+      <input id="token" placeholder="token" value="1996bd63f4c524b4cd36499e3db39d321f0b39a7"/>
+    </div>
+
+    <div>
+      <label title="Enter each entry onseperate lines. Each line as 'name,url' where url is 'https://github.com/<orgname>/<reponame>' or 'https://github.com/orgs/<orgname>' or  'https://github.com/users/<username>' or a space seperated list 'https://github.com/<orgname>/<reponame1> https://github.com/<orgname>/<reponame2>">csv inputs</label>
+      <textarea id="repos" style="width: 100%; height:200px;">
 #name,url/s
 Bitcoin,https://github.com/bitcoin/bitcoin https://github.com/bitcoin/bips https://github.com/bitcoin/libbase58
 Iota,https://github.com/orgs/iotaledger
@@ -66,18 +76,15 @@ Sia,https://github.com/NebulousLabs/Sia https://github.com/NebulousLabs/Sia-UI h
 Status,https://github.com/orgs/status-im
 Cardano,https://github.com/input-output-hk/cardano-sl
 Tittiecoin,https://github.com/users/tittiecoin
-</textarea>
+    </textarea>
+    </div>
+    <div class="">
+        <button id="go">go</button>
+        <button id="clear">clear cache</button>
+    </div>
+
 </div>
-<div class="">
-    <button id="go">go</button>
-    <button id="clear">clear cache</button>
-</div>
 
-<table id="table" class="display" width="100%">
-
-    <textbox id="markdown"></textbox>
-
-</table>
 
     </body>
 
@@ -94,7 +101,7 @@ Tittiecoin,https://github.com/users/tittiecoin
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gh.js/3.0.8/gh.min.js" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js" charset="utf-8"></script>
 
-<script src="js/example_data.js" charset="utf-8"></script>
+<script src="data/example_data.js" charset="utf-8"></script>
 <script src="js/fetch_stats.js" charset="utf-8"></script>
 <script src="js/main.js" charset="utf-8"></script>
 </html>

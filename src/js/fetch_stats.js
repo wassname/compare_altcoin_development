@@ -3,7 +3,6 @@
  */
 LITE_MODE = localStorage['LITE_MODE']
 
-
 let gh = new GitHub(localStorage['gh_token'] || '')
 
 $(document).ready(function() {
@@ -15,17 +14,16 @@ $(document).ready(function() {
     gh = new GitHub(localStorage['gh_token'] || '')
 })
 
-
-var MergeBySumingNumbers = objects =>
-    objects.reduce((s,r)=>{
-        Object.keys(r).map(key=>{
-            v = r[key]
-            if (typeof(v)==="number") s[key]=(s[key]||0)+v
-            else s[key] = v
-        })
-       return s
-    },{})
-
+var MergeBySumingNumbers = objects => objects.reduce((s, r) => {
+    Object.keys(r).map(key => {
+        v = r[key]
+        if (typeof(v) === "number") {
+            s[key] = _.round((s[key] || 0) + v, 3)
+        } else
+            s[key] = v
+    })
+    return s
+}, {})
 
 function promiseGitHubRepoStats(url) {
 
@@ -40,10 +38,17 @@ function promiseGitHubRepoStats(url) {
         })
     })
 
-    if (LITE_MODE) {return promiseStats}
+    if (LITE_MODE) {
+        return promiseStats
+    }
 
     var promiseContributors = new Promise(function(resolve, reject) {
-        gh.get(apiUrl + '/contributors', {all:true, opts:{per_page:100}}, (err, response) => {
+        gh.get(apiUrl + '/contributors', {
+            all: true,
+            opts: {
+                per_page: 100
+            }
+        }, (err, response) => {
             if (err)
                 reject(err)
             else
@@ -57,7 +62,11 @@ function promiseGitHubRepoStats(url) {
     })
 
     var promiseCommits = new Promise(function(resolve, reject) {
-        gh.get(apiUrl + '/stats/participation', {opts:{per_page:100}}, (err, response) => {
+        gh.get(apiUrl + '/stats/participation', {
+            opts: {
+                per_page: 100
+            }
+        }, (err, response) => {
             if (err)
                 reject(err)
             else
@@ -70,7 +79,11 @@ function promiseGitHubRepoStats(url) {
     })
 
     var promiseChanges = new Promise(function(resolve, reject) {
-        gh.get(apiUrl + '/stats/code_frequency', {opts:{per_page:100}}, (err, response) => {
+        gh.get(apiUrl + '/stats/code_frequency', {
+            opts: {
+                per_page: 100
+            }
+        }, (err, response) => {
             if (err)
                 reject(err)
             else
@@ -83,7 +96,11 @@ function promiseGitHubRepoStats(url) {
     })
 
     var promiseReleases = new Promise(function(resolve, reject) {
-        gh.get(apiUrl + '/releases', {opts:{per_page:100}}, (err, response) => {
+        gh.get(apiUrl + '/releases', {
+            opts: {
+                per_page: 100
+            }
+        }, (err, response) => {
             if (err)
                 reject(err)
             else
@@ -96,37 +113,27 @@ function promiseGitHubRepoStats(url) {
     return Promise.all([promiseStats, promiseContributors, promiseChanges, promiseCommits, promiseReleases]).then(data => _.merge(...data))
 }
 
-
-function promiseGitHubRepoStatsMulti(repos){
-    return Promise.all(
-        repos.map(promiseGitHubRepoStats)
-    )
-    .then(MergeBySumingNumbers)
+function promiseGitHubRepoStatsMulti(repos) {
+    return Promise.all(repos.map(promiseGitHubRepoStats)).then(MergeBySumingNumbers)
 }
 
-
-function promiseGitHubOrgStats(org){
+function promiseGitHubOrgStats(org) {
     var apiUrl = org.replace('https://github.com/', '') + '/repos'
     return new Promise(function(resolve, reject) {
-        gh.get(apiUrl, {opts:{per_page:100}}, (err, response) => {
+        gh.get(apiUrl, {
+            opts: {
+                per_page: 100
+            }
+        }, (err, response) => {
             if (err)
                 reject(err)
             else
                 resolve(response)
         })
-    })
-    .then(data => data
-        // we could filter out minor repos here
-        .filter(row =>
-            row.stargazers_count>7 &&
-            moment(row.updated_at)>moment().subtract(12, 'months') &&
-            row.private === false &&
-            row.archived === false
-        )
-        .map(row=>row.full_name))
-    .then(promiseGitHubRepoStatsMulti)
+    }).then(data => data
+    // we could filter out minor repos here
+        .filter(row => row.stargazers_count > 7 && moment(row.updated_at) > moment().subtract(12, 'months') && row.private === false && row.archived === false).map(row => row.full_name)).then(promiseGitHubRepoStatsMulti)
 }
-
 
 function promiseBitbucketRepoStats(url) {
     url = url.replace('https://bitbucket.org/', 'https://api.bitbucket.org/2.0/repositories/')
