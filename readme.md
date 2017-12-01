@@ -2,7 +2,9 @@ This site fetches github statistics to rank cryptocoins by developer activity.
 
 Because I wish people paid more attention to altcoin fundementals, like how much work the developers are doing. 
 
-One disclaimer, these stats are meant to be broad guides seperating the active and not active coins. Or to put it another way?: "I'm not sure open issues is a very valid indication of success if people don't understand it. Some projects use issues as task management and not just bug tracking. Other than that this looks really cool - u/Alonski"
+One disclaimer, these stats should just be a broad guide to which coin is developing or not. As reddit user u/Alonski said:  "I'm not sure open issues is a very valid indication of success if people don't understand it. Some projects use issues as task management and not just bug tracking. Other than that this looks really cool"
+
+Any problems, feel free to submit a PR.
 
 The [live site is here](https://wassname.github.io/compare_altcoin_development/src/) but there's a snapshot below.
 
