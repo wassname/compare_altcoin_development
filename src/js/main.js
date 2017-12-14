@@ -175,7 +175,7 @@ function refresh() {
     let total = countdown * 1
     $("#go").prop('disabled', true);
     $("#go").text('' + countdown)
-    if (!localStorage['gh-data'])
+    if (!localStorage['gh-data']) {
         promises = Promise.all(Object.keys(coins).map(coin => {
             var url = coins[coin]
             // TODO(mjc) if its a user, list repos
@@ -229,14 +229,14 @@ function refresh() {
             localStorage['gh-data2'] = JSON.stringify(data)
             return data
         })
-    else
+} else {
         promises = Promise.resolve(JSON.parse(localStorage['gh-data']))
-
+    }
     promises.then(data => {
         // data = parseDates(data)
         data = fillAll(data, columns)
 
-        $('#table').DataTable({
+        table1 = $('#table').DataTable({
             data: _.values(data),
             columns,
             "order": [
@@ -272,6 +272,8 @@ $(document).ready(function() {
         window.location.reload()
     })
     $('#go').on('click', function() {
+        localStorage['gh-data'] = ''
+        table1.destroy();
         refresh()
     })
     refresh()
