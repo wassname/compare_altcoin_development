@@ -236,7 +236,7 @@ function refresh() {
         // data = parseDates(data)
         data = fillAll(data, columns)
 
-        $('#table').DataTable({
+        table1 = $('#table').DataTable({
             data: _.values(data),
             columns,
             "order": [
@@ -272,6 +272,8 @@ $(document).ready(function() {
         window.location.reload()
     })
     $('#go').on('click', function() {
+        localStorage['gh-data'] = ''
+        table1.destroy();
         refresh()
     })
     refresh()
